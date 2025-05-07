@@ -1,0 +1,27 @@
+{
+  "name": "artemisx",
+  "version": "1.0.0",
+  "description": "GPT-aligned multi-chain bump orchestration suite",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "echo \"no tests yet\" && exit 0"
+  },
+  "dependencies": {
+    "next": "13.4.10",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@solana/web3.js": "^1.73.3",
+    "@solana/wallet-adapter-react": "^0.15.6",
+    "@solana/wallet-adapter-wallets": "^0.9.11",
+    "ethers": "^6.6.2",
+    "file-saver": "^2.0.5"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.3.2",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.24"
+  }
+}
