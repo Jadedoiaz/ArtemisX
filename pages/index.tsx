@@ -2,6 +2,7 @@ import Head from 'next/head'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
+import { Connection, SystemProgram, Transaction } from '@solana/web3.js'
 
 const WalletMultiButton = dynamic(
   async () => (await import('@solana/wallet-adapter-react-ui')).WalletMultiButton,
@@ -9,17 +10,34 @@ const WalletMultiButton = dynamic(
 )
 
 export default function Home() {
-  const { connected, publicKey } = useWallet()
+  const wallet = useWallet()
+  const { connected, publicKey, signTransaction } = wallet
   const [status, setStatus] = useState('')
 
-  const handleBump = () => {
-    if (!connected || !publicKey) {
-      setStatus('Wallet not connected!')
+  const handleBump = async () => {
+    if (!connected || !publicKey || !signTransaction) {
+      setStatus('Wallet not connected or unsupported.')
       return
     }
 
-    console.log('Sending bump transaction...')
-    setStatus('✅ Bump triggered at ' + new Date().toLocaleTimeString())
+    try {
+      const connection = new Connection('https://api.mainnet-beta.solana.com')
+      const tx = new Transaction().add(
+        SystemProgram.transfer({
+          fromPubkey: publicKey,
+          toPubkey: publicKey,
+          lamports: 1000 // 0.000001 SOL
+        })
+      )
+
+      const signedTx = await signTransaction(tx)
+      const sig = await connection.sendRawTransaction(signedTx.serialize())
+      await connection.confirmTransaction(sig, 'confirmed')
+      setStatus(`✅ Bump TX confirmed: ${sig.slice(0, 8)}...`)
+    } catch (err) {
+      console.error(err)
+      setStatus('❌ Bump failed. See console.')
+    }
   }
 
   return (
