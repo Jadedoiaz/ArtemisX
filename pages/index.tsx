@@ -30,6 +30,10 @@ export default function Home() {
         })
       )
 
+      const { blockhash } = await connection.getLatestBlockhash()
+      tx.recentBlockhash = blockhash
+      tx.feePayer = publicKey
+
       const signedTx = await signTransaction(tx)
       const sig = await connection.sendRawTransaction(signedTx.serialize())
       await connection.confirmTransaction(sig, 'confirmed')
