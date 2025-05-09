@@ -1,6 +1,22 @@
 import Head from 'next/head'
+import { useWallet } from '@solana/wallet-adapter-react'
+import { useEffect, useState } from 'react'
 
 export default function Home() {
+  const { connected, publicKey } = useWallet()
+  const [status, setStatus] = useState('')
+
+  const handleBump = () => {
+    if (!connected || !publicKey) {
+      setStatus('Wallet not connected!')
+      return
+    }
+
+    // Replace this with real bump logic
+    console.log('Sending bump transaction...')
+    setStatus('✅ Bump triggered at ' + new Date().toLocaleTimeString())
+  }
+
   return (
     <>
       <Head>
@@ -12,13 +28,20 @@ export default function Home() {
           GPT-aligned, override-enabled, chain-agnostic bump automation.
         </p>
         <div className="space-x-4">
-          <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+          <button
+            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            onClick={() => setStatus(`🔗 Wallet connected: ${publicKey?.toBase58()}`)}
+          >
             Connect Wallet
           </button>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          <button
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={handleBump}
+          >
             Start Bumping
           </button>
         </div>
+        {status && <p className="mt-6 text-lg text-yellow-300">{status}</p>}
       </main>
     </>
   )
