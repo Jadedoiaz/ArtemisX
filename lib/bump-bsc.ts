@@ -1,13 +1,14 @@
-import { ethers } from 'ethers'
+import { ethers } from 'ethers';
 
-export async function sendMockBscBump(signer: ethers.Signer) {
-  if (!signer) throw new Error('No signer available')
+export async function bumpBSC(providerUrl: string) {
+  const provider = new ethers.JsonRpcProvider(providerUrl);
+  const signer = provider.getSigner();
 
   const tx = {
     to: await signer.getAddress(),
-    value: ethers.utils.parseEther('0.00001'), // self-send
-  }
+    value: ethers.parseEther('0.00001') // Updated for ethers v6
+  };
 
-  const txResp = await signer.sendTransaction(tx)
-  return txResp.hash
+  const txResp = await signer.sendTransaction(tx);
+  return txResp.hash;
 }
